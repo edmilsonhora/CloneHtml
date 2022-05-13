@@ -1,0 +1,60 @@
+﻿@model List<Web_Clone.Models.Categoria>
+
+@{
+    ViewBag.Title = "Categorias";
+}
+
+<h2>Categorias - Index</h2>
+
+<button id="btnAcao">ACAO</button>
+
+<div class="card">
+    <div class="body-card">
+        <div id="cart">
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+<script>
+
+    $(document).ready(function () {
+
+
+        $("#btnAcao").click(function () {
+
+            $.getJSON("/Categorias/GetCategories/", function (dados) {
+                let num = 0;
+                var current = document.getElementById("cart").cloneNode(true);
+                var father = document.getElementById("cart").parentElement;
+                father.innerHTML = "";
+                father.appendChild(current);
+
+                $.each(dados, function (i, categoria) {
+                    num++;
+                    var newItem = current.cloneNode(true);
+                    newItem.id = "cart" + num;
+                    newItem.innerHTML += "<h4>" + categoria.Nome + "</h4>";
+                    newItem.innerHTML += "<ul>";
+
+                    $.getJSON("/Categorias/GetProducts/" + categoria.Id, function (dados1) {
+                        $.each(dados1, function (p, produto) {
+                            newItem.innerHTML += "<li>" + produto.Descricao + "</li>";
+                        });
+                    });
+
+                    newItem.innerHTML += "</ul>";
+                    father.appendChild(newItem);
+                });
+            });
+
+        });
+    });
+
+</script>
+
